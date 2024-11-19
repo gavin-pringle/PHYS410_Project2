@@ -1,3 +1,6 @@
+% sch_1d_cn: Solves 1D Schrödinger equation using O(dt^2,dx^2) 
+% Crank-Nicolson implicit scheme.
+% 
 % Inputs:
 %
 %   tmax:   Maximum integration time
@@ -20,3 +23,36 @@
 %   v:      Array of potential values [nx]
 function [x t psi psire psiim psimod prob v] = ...
     sch_1d_cn(tmax, level, lambda, idtype, idpar, vtype, vpar)
+
+    % Define mesh and derived parameters
+    nx = 2^level + 1;
+    x = linspace(0.0, 1.0, nx);
+    dx = x(2) - x(1);
+    dt = lambda * dx;
+    nt = round(tmax / dt) + 1;
+    t = [0 : nt-1] * dt;
+
+    % Initialize solution, and set initial data
+    u = zeros(nt, nx);
+    if idtype == 0
+        % Exact family 
+        
+    elseif idtype == 1
+        % Boosted Gaussian
+
+    else
+        fprintf('sch_1d_cn: Invalid idtype=%d\n', idtype);
+        return
+    end
+ 
+    % Initialize potential
+    if vtype == 0
+        % No potential
+        
+    elseif vtype == 1
+        % Rectangular barrier or well 
+        
+    else
+        fprintf('sch_1d_cn: Invalid vtype=%d\n', vtype);
+        return
+    end
