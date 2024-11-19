@@ -52,7 +52,7 @@ function [x t psi psire psiim psimod prob v] = ...
     % Initial storage for prob and calculate for initial time
     prob = zeros(nt, nx);
     for j = 1 : nx
-        prob(1, j) = trapz(x(1:j), psi(1, 1:j));
+        prob(1, j) = trapz(x(1:j), abs(psi(1, 1:j)).^2);
     end 
 
     % Initialize potential
@@ -97,7 +97,7 @@ function [x t psi psire psiim psimod prob v] = ...
 
         % Calculate prob each time step
         for j = 1 : nx
-            prob(n+1, j) = trapz(x(n+1:j), psi(n+1, 1:j));
+            prob(n+1, j) = trapz(x(1:j), abs(psi(n+1, 1:j)).^2);
         end 
     end
 
