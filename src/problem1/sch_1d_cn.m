@@ -30,7 +30,7 @@ function [x t psi psire psiim psimod prob v] = ...
     dx = x(2) - x(1);
     dt = lambda * dx;
     nt = round(tmax / dt) + 1;
-    t = [0 : nt-1] * dt;
+    t = (0 : nt-1) * dt;
 
     % Initialize solution, and set initial data
     psi = zeros(nt, nx);
@@ -39,14 +39,23 @@ function [x t psi psire psiim psimod prob v] = ...
         psi(1, :) = sin(idpar(1) * pi * x);
     elseif idtype == 1
         % Boosted Gaussian
-        psi(1, :) = exp(i * idpar(3) * x) .* ...
+        psi(1, :) = exp(1i * idpar(3) * x) .* ...
                     exp(-((x - idpar(1)) ./ idpar(2)) .^ 2);
     else
         fprintf('sch_1d_cn: Invalid idtype=%d\n', idtype);
         return
     end
- 
-    % Initialize potential, and 
+    % Set first and last values of initial data to zero
+    psi(1, 1) = 0; 
+    psi(1, nx) = 0; 
+
+    % Initial storage for prob and calculate for initial time
+    prob = zeros(nt, nx);
+    for j = 1 : nx
+        prob(1, j) = trapz(x(1:j), psi(1, 1:j));
+    end 
+
+    % Initialize potential
     v = zeros(1,nx);
     if vtype == 0
         % No potential - leave unchanged
@@ -58,15 +67,12 @@ function [x t psi psire psiim psimod prob v] = ...
         return
     end
 
-    % Initialize storage for sparse matrix and RHS
-    dl = zeros(nx,1);
-    d  = zeros(nx,1);
-    du = zeros(nx,1);
+    % Initialize storage for RHS
     f  = zeros(nx,1);
 
     % Set up tridiagonal system
-    dl = 0.5 / dx^2 * ones(nx, 1);
-    d  = (i / dt - 1 / dx^2 - 0.5 * v.') .* ones(nx,1);
+    dl = 0.5/dx^2 * ones(nx, 1);
+    d  = (1i/dt - 1/dx^2 - 0.5*v.') .* ones(nx,1);
     du = dl;
     % Fix up boundary cases
     d(1) = 1.0;
@@ -76,18 +82,27 @@ function [x t psi psire psiim psimod prob v] = ...
     % Define sparse matrix
     A = spdiags([dl d du], -1:1, nx, nx);
 
-    % Compute solution using CN scheme CHANGE THIS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    % Compute solution using CN scheme
     for n = 1 : nt-1
-        % Define RHS of linear system ...
-        f(2:nx-1) = u(n, 2:nx-1) / dt + 0.5 * (u(n, 1:nx-2) - 2 * u(n, 2:nx-1) + u(n, 3:nx)) / dx^2;
+        % Define RHS of linear system
+        f(2:nx-1) = u(n, 2:nx-1) .* (1i/dt + 1/dx^2 + 0.5*v(2:nx-1)) ...
+                    + (-0.5/dx^2) * (u(n, 1:nx-2) + u(n, 3:nx));
         f(1) = 0.0;
         f(nx) = 0.0;
-        % Solve system, thus updating approximation to next time 
-        % step ...
-        u(n+1, :) = A \ f;
-  
-        if trace && ~mod(n,trace)
-           fprintf('diff_1d_cn: Step %d of %d\n', n, nt);
-        end
-     end
+        % Solve system, thus updating approximation to next time step
+        psi(n+1, :) = A \ f;
+        % Set first and last values to zero
+        psi(n+1, 1) = 0; 
+        psi(n+1, nx) = 0; 
+
+        % Calculate prob each time step
+        for j = 1 : nx
+            prob(n+1, j) = trapz(x(n+1:j), psi(n+1, 1:j));
+        end 
+    end
+
+    % Compute real, imaginary, and modulus of each entry in psi
+    psire  = real(psi);
+    psiim  = imag(psi);
+    psimod = abs(psi); 
 end
