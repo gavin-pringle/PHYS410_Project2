@@ -51,7 +51,7 @@ function [x t psi psire psiim psimod prob v] = ...
 
     % Initial storage for prob and calculate for initial time
     prob = zeros(nt, nx);
-    for j = 1 : nx
+    for j = 2 : nx
         prob(1, j) = trapz(x(1:j), abs(psi(1, 1:j)).^2);
     end 
 
@@ -85,8 +85,8 @@ function [x t psi psire psiim psimod prob v] = ...
     % Compute solution using CN scheme
     for n = 1 : nt-1
         % Define RHS of linear system
-        f(2:nx-1) = u(n, 2:nx-1) .* (1i/dt + 1/dx^2 + 0.5*v(2:nx-1)) ...
-                    + (-0.5/dx^2) * (u(n, 1:nx-2) + u(n, 3:nx));
+        f(2:nx-1) = psi(n, 2:nx-1) .* (1i/dt + 1/dx^2 + 0.5*v(2:nx-1)) ...
+                    + (-0.5/dx^2) * (psi(n, 1:nx-2) + psi(n, 3:nx));
         f(1) = 0.0;
         f(nx) = 0.0;
         % Solve system, thus updating approximation to next time step
@@ -96,7 +96,7 @@ function [x t psi psire psiim psimod prob v] = ...
         psi(n+1, nx) = 0; 
 
         % Calculate prob each time step
-        for j = 1 : nx
+        for j = 2 : nx
             prob(n+1, j) = trapz(x(1:j), abs(psi(n+1, 1:j)).^2);
         end 
     end
