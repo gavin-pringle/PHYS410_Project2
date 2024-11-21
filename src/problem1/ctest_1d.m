@@ -4,42 +4,52 @@ close all;
 clear; clc;
 format long;
 
-% Simulation maximum time 
-tmax = 10;
-% Discretization level
-level = 6;
-% Delta t by Delta x ratio
-lambda = 1;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Convergence Test #1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Derived parameters 
-nx = 2^level + 1;
-x = linspace(0.0, 1.0, nx);
-dx = x(2) - x(1);
-dt = lambda * dx;
-nt = round(tmax / dt) + 1;
-t = (0 : nt-1) * dt;
+% Simulation maximum time 
+tmax = 0.25;
+% Discretization levels
+minlevel = 6;
+maxlevel = 9;
+% Delta t by Delta x ratio
+lambda = 0.1;
 
 % idtype = 0   ->  Exact family (sine wave)
 % idtype = 1   ->  Boosted Gaussian
-idtype = 1;
-idpar = zeros(1,3);
-idpar(1) = 0.5; % m OR x0
-idpar(2) = 1; % delta
-idpar(3) = 1; % p 
+idtype = 0;
+idpar = [3]; % m = 3
 
 % vtype = 0   ->  No potential
 % vtype = 1   ->  Rectangular barrier or well
-vtype = 01;
+vtype = 0;
 vpar = zeros(1,3);
-vpar(1) = 0.8; % xmin 
-vpar(2) = 0.9; % xmax 
-vpar(3) = -10;  % V_c
 
-% Compute the solution
-[x t psi psire psiim psimod prob v] = ...
-        sch_1d_cn(tmax, level, lambda, idtype, idpar, vtype, vpar);
+% Perform computation at various levels of discretization, store
+% results in cell arrays ...
+for l = minlevel : maxlevel
+    % Compute the solution
+    [x{l} t{l} psi{l} psire{l} psiim{l} psimod{l} prob{l} v{l}] ...
+        = sch_1d_cn(tmax, l, lambda, idtype, idpar, vtype, vpar);
 
-surf(x, t, psimod);
-xlabel('x'), ylabel('t'), zlabel('|z|')
+    [nt{l}, nx{l}] = size(psi{l});
 
-%plot(prob(:, nx))
+    % Since idtype == 0, compute exact solution
+    psixct{l} = zeros(nt{l}, nx{l});
+    for n = 1 : nt{l}
+        psixct{l}(n,:) = exp(-1i * idpar(1)^2 * pi^2 * t{l}(n)) ...
+                       * sin(idpar(1) * pi * x{l});
+    end
+end
+
+% Calculating the level-to-level differences, taking every second 
+% value of the larger length array
+dpsi6 = downsample(psi{7}, 2) - psi{6}; 
+dpsi7 = downsample(psi{8}, 2) - psi{7}; 
+dpsi8 = downsample(psi{9}, 2) - psi{8}; 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Convergence Test #2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
