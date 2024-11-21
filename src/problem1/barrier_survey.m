@@ -21,7 +21,7 @@ idpar = [0.40, 0.075, 20.0];
 vtype = 1;
 xmin = 0.6;
 xmax = 0.8;
-lnV0 = linspace(-2, 5, 4); % CHANGE THIS
+lnV0 = linspace(-2, 5, 10); % CHANGE THIS
 
 % Survey range  
 x1 = 0.8;
@@ -53,3 +53,4 @@ for idx = 1 : length(lnV0)
     lnFe_bar{idx} = log(Fe_bar{idx});
 end
 
+plot(lnV0, cell2mat(lnFe_bar))
