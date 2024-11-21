@@ -6,7 +6,7 @@ format long;
 
 % Simulation maximum time 
 tmax = 0.25;
-% Discretization levels
+% Discretization level
 level = 6;
 % Delta t by Delta x ratio
 lambda = 0.1;
