@@ -63,8 +63,6 @@ rms_dpsi6 = rms(abs(dpsi6), 2);
 rms_dpsi7 = rms(abs(dpsi7), 2);
 rms_dpsi8 = rms(abs(dpsi8), 2);
 
-% MAKE FIGURE LABELS BETTER
-
 % Plot scaled errors for different discretization levels
 fig1 = figure;
 rho = 4;
@@ -73,9 +71,11 @@ plot(t{6}, rms_dpsi6, 'LineWidth', 2);
 plot(t{7}, rho*rms_dpsi7, 'LineWidth', 2);
 plot(t{8}, rho^2*rms_dpsi8, 'LineWidth', 2);
 xlabel("Time");
-ylabel("Difference between level");
+ylabel("l-2 norm of difference between level");
 legend('||dΨ^6||', '4 * ||dΨ^7||', '4^2 * ||dΨ^8||', 'Location', 'best');
-title("Convergence Test: rho = 4");
+title({"1d Schrodinger equation convergence test - Exact family"
+       "l-2 norm of difference between level l solutions"
+       "idtype = 0, vtype = 0, tmax = 0.25, lambda = 0.1, 6 <= l <= 9"});
 ax = gca;
 ax.FontSize = 12;
 
@@ -88,10 +88,12 @@ plot(t{7}, rho*rms_Epsi{7}, 'LineWidth', 2);
 plot(t{8}, rho^2*rms_Epsi{8}, 'LineWidth', 2);
 plot(t{9}, rho^3*rms_Epsi{9}, 'LineWidth', 2);
 xlabel("Time");
-ylabel("Exact error");
-legend('||dΨ^6||', '4 * ||dΨ^7||', '4^2 * ||dΨ^8||', '4^3 * ||dΨ^9||'...
+ylabel("l-2 norm of exact error");
+legend('||EΨ^6||', '4 * ||EΨ^7||', '4^2 * ||EΨ^8||', '4^3 * ||EΨ^9||'...
         , 'Location', 'best');
-title("Exact error convergence Test: rho = 4");
+title({"1d Schrodinger equation convergence test - Exact family"
+       "l-2 norm of exact error for each level l"
+       "idtype = 0, vtype = 0, tmax = 0.25, lambda = 0.1, 6 <= l <= 9"});
 ax = gca;
 ax.FontSize = 12;
 
@@ -147,8 +149,6 @@ rms_dpsi6 = rms(abs(dpsi6), 2);
 rms_dpsi7 = rms(abs(dpsi7), 2);
 rms_dpsi8 = rms(abs(dpsi8), 2);
 
-% MAKE FIGURE LABELS BETTER
-
 % Plot scaled errors for different discretization levels
 fig3 = figure;
 rho = 4;
@@ -157,8 +157,10 @@ plot(t{6}, rms_dpsi6, 'LineWidth', 2);
 plot(t{7}, rho*rms_dpsi7, 'LineWidth', 2);
 plot(t{8}, rho^2*rms_dpsi8, 'LineWidth', 2);
 xlabel("Time");
-ylabel("Difference between level");
+ylabel("l-2 norm of difference between level");
 legend('||dΨ^6||', '4 * ||dΨ^7||', '4^2 * ||dΨ^8||', 'Location', 'best');
-title("Convergence Test: rho = 4");
+title({"1d Schrodinger equation convergence test - Boosted Gaussian"
+       "l-2 norm of difference between level l solutions"
+       "idtype = 1, vtype = 0, tmax = 0.01, lambda = 0.01, 6 <= l <= 9"});
 ax = gca;
 ax.FontSize = 12;
