@@ -21,7 +21,7 @@ idpar = [0.40, 0.075, 20.0];
 vtype = 1;
 xmin = 0.6;
 xmax = 0.8;
-lnV0 = linspace(-2, 5, 10); % CHANGE THIS
+lnV0 = linspace(-2, 5, 251);
 
 % Survey range  
 x1 = 0.8;
@@ -48,9 +48,16 @@ for idx = 1 : length(lnV0)
     end
 
     % Compute excess fractional probability and its logarithm
-    Fe_bar{idx} = (P_bar{idx}(x1_loc) - P_bar{idx}(x2_loc)) / ...
-                    (x{idx}(x1_loc) - x{idx}(x2_loc));
-    lnFe_bar{idx} = log(Fe_bar{idx});
+    Fe_bar{idx} = (P_bar{idx}(x2_loc) - P_bar{idx}(x1_loc)) / ...
+                    (x{idx}(x2_loc) - x{idx}(x1_loc));
+    lnFe_bar{idx} = log(Fe_bar{idx})
 end
 
-plot(lnV0, cell2mat(lnFe_bar))
+fig1 = figure;
+plot(lnV0, cell2mat(lnFe_bar), 'LineWidth', 2)
+title({"Barrier Survey - Log-log plot of excess fractional probablity vs. V_0"
+       "Barrier between x = 0.6 and x = 0.8. x_1 = 0.8, x_2 = 1.0"})
+xlabel('$$\mathbf{\ln(V_0)}$$', 'interpreter', 'latex')
+ylabel('$$\mathbf{\ln(\overline{F_e}(x_1, x_2))}$$', 'interpreter', 'latex')
+ax = gca;
+ax.FontSize = 12;
