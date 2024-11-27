@@ -24,31 +24,75 @@ function [x y t psi psire psiim psimod v] = ...
     sch_2d_adi(tmax, level, lambda, idtype, idpar, vtype, vpar)
 
     % Define mesh and derived parameters
-    nx = 2^level + 1;
-    ny = nx;
-    x = linspace(0.0, 1.0, nx);
-    y = linspace(0.0, 1.0, nx);
-    dx = x(2) - x(1);
-    dy = y(2) - y(1);
+    nx = 2^level + 1;               ny = nx;
+    x  = linspace(0.0, 1.0, nx);    y  = x;
+    dx = x(2) - x(1);               dy = dx;
     dt = lambda * dx;
     nt = round(tmax / dt) + 1;
-    t = (0 : nt-1) * dt;
+    t  = (0 : nt-1) * dt;
+
+    % Define meshgrid for populating psi(x,y,0) and V(x,y)
+    [X, Y] = meshgrid(x, y);
 
     % Initialize solution, and set initial data
     psi = zeros(nt, nx, ny);
     if idtype == 0
         % Exact family 
-        psi(1, :, :) = sin(idpar(1) * pi * x)' * sin(idpar(2) * pi * y);
+        psi(1, :, :) = sin(idpar(1)*pi*x)' * sin(idpar(2)*pi*y);
     elseif idtype == 1
         % Boosted Gaussian
-        psi(1, :) = exp(1i * idpar(3) * x) .* ...
-                    exp(-((x - idpar(1)) ./ idpar(2)) .^ 2);
+        % Create variable names for function parameters 
+        x0 = idpar(1);      y0 = idpar(2);    
+        delta_x = idpar(3); delta_y = idpar(4); 
+        p_x = idpar(5);     p_y = idpar(6);   
+
+        % Calculate psi(x, y, 0)
+        psi_0 = exp(1i*p_x*X) .* exp(1i*p_y*Y) ...
+             .* exp(-(((X - x0).^2)/delta_x^2 + ((Y - y0).^2)/delta_y^2));
+        psi(1, :, :) = reshape(psi_0, [1, nx, ny]);
     else
         fprintf('sch_2d_adi: Invalid idtype=%d\n', idtype);
         return
     end
-    % Set first and last values of initial data to zero
-    psi(1, 1) = 0; 
-    psi(1, nx) = 0; 
+    % Set boundary conditions of initial data to zero
+    % t = 0:   ψ(0,y,t) = ψ(1,y,t) = ψ(x,0,t) = ψ(x,1,t) = 0
+    psi(1, 1, :) = 0; 
+    psi(1, :, 1) = 0; 
+    psi(1, nx, :) = 0; 
+    psi(1, :, ny) = 0; 
 
+    % Initialize time-independent potential
+    v = zeros(nx,ny);
+    if vtype == 0
+        % No potential - leave unchanged
+    elseif vtype == 1
+        % Rectangular barrier or well 
+        % Create variable names for function parameters 
+        x_min = vpar(1);   x_max = vpar(2);    
+        y_min = vpar(3);   y_max = vpar(4); 
+        Vc = vpar(5);
+        
+        % Calculate V(x, y)
+        v((X >= x_min & X <= x_max) & (Y >= y_min & Y <= y_max)) = Vc;
+    elseif vtype == 2
+        % Double slit
+        % Create variable names for function parameters 
+        x1 = vpar(1);   x2 = vpar(2);    
+        x3 = vpar(3);   x4 = vpar(4); 
+        Vc = vpar(5); 
+        j_prime = (ny - 1)/4 + 1;
+
+        % Calculate V(x, y)
+        Vc_indices = (X <= x1) | (X >= x2 & X <= x3) | (X >= x4);
+        v(Vc_indices, j_prime) = Vc;
+        v(Vc_indices, j_prime + 1) = Vc;
+    else
+        fprintf('sch_2d_adi: Invalid vtype=%d\n', vtype);
+        return
+    end
+
+    % Compute real, imaginary, and modulus of each entry in psi
+    psire = real(psi);
+    psiim = imag(psi);
+    psimod = abs(psi);
 end
