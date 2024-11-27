@@ -42,9 +42,9 @@ function [x y t psi psire psiim psimod v] = ...
     elseif idtype == 1
         % Boosted Gaussian
         % Create variable names for function parameters 
-        x0 = idpar(1);      y0 = idpar(2);    
+        x0      = idpar(1);      y0 = idpar(2);    
         delta_x = idpar(3); delta_y = idpar(4); 
-        p_x = idpar(5);     p_y = idpar(6);   
+        p_x     = idpar(5);     p_y = idpar(6);   
 
         % Calculate psi(x, y, 0)
         psi_0 = exp(1i*p_x*X) .* exp(1i*p_y*Y) ...
@@ -56,8 +56,8 @@ function [x y t psi psire psiim psimod v] = ...
     end
     % Set boundary conditions of initial data to zero
     % t = 0:   ψ(0,y,t) = ψ(1,y,t) = ψ(x,0,t) = ψ(x,1,t) = 0
-    psi(1, 1, :) = 0; 
-    psi(1, :, 1) = 0; 
+    psi(1, 1, :)  = 0; 
+    psi(1, :, 1)  = 0; 
     psi(1, nx, :) = 0; 
     psi(1, :, ny) = 0; 
 
@@ -70,7 +70,7 @@ function [x y t psi psire psiim psimod v] = ...
         % Create variable names for function parameters 
         x_min = vpar(1);   x_max = vpar(2);    
         y_min = vpar(3);   y_max = vpar(4); 
-        Vc = vpar(5);
+        Vc    = vpar(5);
         
         % Calculate V(x, y)
         v((X >= x_min & X <= x_max) & (Y >= y_min & Y <= y_max)) = Vc;
@@ -90,6 +90,34 @@ function [x y t psi psire psiim psimod v] = ...
         fprintf('sch_2d_adi: Invalid vtype=%d\n', vtype);
         return
     end
+
+    % Define sparse matrix diagonals for first ADI step
+    dl = (-1i*dt/(2*dx^2)) * ones(nx, 1);
+    d  = (1 + 1i*dt/(dx^2)) * ones(nx, 1);
+    du = dl;
+    % Impose boundary conditions
+    d(1)     = 1.0;
+    du(2)    = 0.0;
+    dl(nx-1) = 0.0;
+    d(nx)    = 1.0;
+    % Compute sparse matrix for first ADI step
+    A_half = spdiags([dl d du], -1:1, nx, nx);
+
+    % Loop that iterates each time step 
+    for n = 1:nt-1
+        % 
+
+        % Solve tridiagonal system for each j
+        for j = 2:ny-1
+
+        end
+
+        % Solve tridiagonal system for each j
+        for i = 2:nx-1
+
+        end
+
+    end 
 
     % Compute real, imaginary, and modulus of each entry in psi
     psire = real(psi);
