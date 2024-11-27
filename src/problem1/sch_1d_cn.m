@@ -13,14 +13,14 @@
 %
 % Outputs:
 %
-%   x:      Vector of x coordinates [nx]
-%   t:      Vector of t coordinates [nt]
+%   x:      Column vector of x coordinates [nx]
+%   t:      Column vector of t coordinates [nt]
 %   psi:    Array of computed psi values [nt x nx]
 %   psire:  Array of computed psi_re values [nt x nx]
 %   psiim:  Array of computed psi_im values [nt x nx]
 %   psimod: Array of computed sqrt(psi psi*) values [nt x nx]
 %   prob:   Array of computed running integral values [nt x nx]
-%   v:      Array of potential values [nx]
+%   v:      Column vector of potential values [nx]
 function [x t psi psire psiim psimod prob v] = ...
     sch_1d_cn(tmax, level, lambda, idtype, idpar, vtype, vpar)
 
@@ -105,4 +105,9 @@ function [x t psi psire psiim psimod prob v] = ...
     psire  = real(psi);
     psiim  = imag(psi);
     psimod = abs(psi); 
+
+    % Convert to column vectors
+    x = x.';
+    t = t.';
+    v = v.';
 end

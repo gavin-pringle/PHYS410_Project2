@@ -44,12 +44,6 @@ for l = minlevel : maxlevel
     % Compute exact errors and their rms values for later
     Epsi{l} = psixct{l} - psi{l};
     rms_Epsi{l} = rms(abs(Epsi{l}), 2);
-
-    % Compute t for each array
-    dx{l} = x{l}(2) - x{l}(1);
-    dt{l} = lambda * dx{l};
-    nt{l} = round(tmax / dt{l}) + 1;
-    t{l} = (0 : nt{l}-1) * dt{l};
 end
 
 % Calculating the level-to-level differences, taking every second 
@@ -130,12 +124,6 @@ for l = minlevel : maxlevel
         = sch_1d_cn(tmax, l, lambda, idtype, idpar, vtype, vpar);
 
     [nt{l}, nx{l}] = size(psi{l});
-
-    % Compute t for each array
-    dx{l} = x{l}(2) - x{l}(1);
-    dt{l} = lambda * dx{l};
-    nt{l} = round(tmax / dt{l}) + 1;
-    t{l} = (0 : nt{l}-1) * dt{l};
 end
 
 % Calculating the level-to-level differences, taking every second 

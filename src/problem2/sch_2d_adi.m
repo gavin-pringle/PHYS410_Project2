@@ -12,9 +12,9 @@
 %
 % Outputs:
 %
-%   x:      Vector of x coordinates [nx]
-%   y:      Vector of y coordinates [ny]
-%   t:      Vector of t coordinates [nt]
+%   x:      Column vector of x coordinates [nx]
+%   y:      Column vector of y coordinates [ny]
+%   t:      Column vector of t coordinates [nt]
 %   psi:    Array of computed psi values [nt x nx x ny]
 %   psire:  Array of computed psi_re values [nt x nx x ny]
 %   psiim:  Array of computed psi_im values [nt x nx x ny]
@@ -91,7 +91,7 @@ function [x y t psi psire psiim psimod v] = ...
         return
     end
 
-    % Define sparse matrix diagonals for first ADI step
+    % Define sparse matrix diagonals for first ADI eqn
     dl = (-1i*dt/(2*dx^2)) * ones(nx, 1);
     d  = (1 + 1i*dt/(dx^2)) * ones(nx, 1);
     du = dl;
@@ -100,19 +100,28 @@ function [x y t psi psire psiim psimod v] = ...
     du(2)    = 0.0;
     dl(nx-1) = 0.0;
     d(nx)    = 1.0;
-    % Compute sparse matrix for first ADI step
+    % Compute sparse matrix for first ADI eqn
     A_half = spdiags([dl d du], -1:1, nx, nx);
 
     % Loop that iterates each time step 
     for n = 1:nt-1
-        % 
+        % reshape ψ to create a 2d matrix at this timestep
+        psi_n = reshape(psi(n,:,:),nx,ny);
+        % Create matrix for ψ^(n+1/2)
+        psi_half = zeros(nx,ny);
 
-        % Solve tridiagonal system for each j
+        % Solve tridiagonal system for each j (row)
         for j = 2:ny-1
+            % Array for holding the RHS of the first ADI eqn
+            f = zeros(nx,1);
 
         end
 
-        % Solve tridiagonal system for each j
+        % Impose boundary conditions
+        psi_half(:,1) = 0.0;
+        psi_half(:,ny) = 0.0;
+
+        % Solve tridiagonal system for each i (column)
         for i = 2:nx-1
 
         end
@@ -123,4 +132,9 @@ function [x y t psi psire psiim psimod v] = ...
     psire = real(psi);
     psiim = imag(psi);
     psimod = abs(psi);
+
+    % Convert to column vectors
+    x = x.';
+    y = y.';
+    t = t.';
 end
