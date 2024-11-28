@@ -106,7 +106,7 @@ function [x y t psi psire psiim psimod v] = ...
     % Loop that iterates each time step 
     for n = 1:nt-1
         % reshape ψ to create a 2d matrix at this timestep
-        psi_n = reshape(psi(n,:,:),nx,ny);
+        psi_n = reshape(psi(n,:,:), nx, ny);
         % Create matrix for ψ^(n+1/2)
         psi_half = zeros(nx,ny);
 
@@ -115,17 +115,52 @@ function [x y t psi psire psiim psimod v] = ...
             % Array for holding the RHS of the first ADI eqn
             f = zeros(nx,1);
 
+            % Compute RHS of first ADI eqn in stages. 
+            % Ensure boundary conditions are maintained by using 2:nx-1
+            f(2:nx-1) = (1i*dt/(2*dy^2)) * (psi_n(2:nx-1, j+1) + psi_n(2:nx-1, j-1)) ...
+                      + (1 - 1i*dt*(1/dy^2 + v(2:nx-1,j)/2)) .* psi_n(2:nx-1, j);
+            f(2:nx-1) = (1i*dt/(2*dx^2)) * (f(1:nx-2) + f(3:nx)) + ...
+                        (1 - 1i*dt/dx^2) * f(2:nx-1);
+
+            % Solve first ADI system
+            psi_half(:,j) = A_half \ f;
+            % Impose boundary conditions
+            psi_half(1,:)  = 0.0;
+            psi_half(:,1)  = 0.0;
+            psi_half(nx,:) = 0.0;
+            psi_half(:,ny) = 0.0;
         end
 
+        % Define upper and lower sparse matrix diagonals for second ADI eqn
+        dl = (-1i*dt/(2*dy^2)) * ones(ny, 1);
+        du = dl;
         % Impose boundary conditions
-        psi_half(:,1) = 0.0;
-        psi_half(:,ny) = 0.0;
+        du(2)    = 0.0;
+        dl(nx-1) = 0.0;
 
         % Solve tridiagonal system for each i (column)
         for i = 2:nx-1
+            % Define middle sparse matrix diagonal for second ADI eqn
+            v_i = reshape(v(i,:), ny, 1);
+            d = 1 + 1i*dt/dy^2 + (1i*dt/2)*v_i;
+            % Impose boundary conditions 
+            d(1)  = 1.0;
+            d(nx) = 1.0;
 
+            % Compute sparse matrix for second ADI eqn
+            A_full = spdiags([dl d du], -1:1, ny, ny);
+
+            % Compute RHS of second ADI eqn 
+            f = reshape(psi_half(i,:), ny, 1);
+
+            % Solve second ADI system
+            psi(n+1, i, :) = A_full \ f;
+            % Impose boundary conditions 
+            psi(n+1, 1, :)  = 0.0;
+            psi(n+1, :, 1)  = 0.0;
+            psi(n+1, nx, :) = 0.0;
+            psi(n+1, :, ny) = 0.0;
         end
-
     end 
 
     % Compute real, imaginary, and modulus of each entry in psi
