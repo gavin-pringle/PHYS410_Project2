@@ -4,10 +4,6 @@ close all;
 clear; clc;
 format long;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Convergence Test #1
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 % Simulation maximum time 
 tmax = 0.05;
 % Discretization levels
@@ -37,12 +33,12 @@ for l = minlevel : maxlevel
     [nt{l}, nx{l}, ny{l}] = size(psi{l});
 
     % Define meshgrid for computing exact psi(x,y,t)
-    [X{l}, Y{l}] = meshgrid(x{l}, y{l});
+    [X{l}, Y{l}] = meshgrid(x{l}.', y{l}.');
 
     % Compute exact solution
     psixct{l} = zeros(nt{l}, nx{l}, ny{l});
     for n = 1 : nt{l}
-        psixct_n{l} = exp(-1i*(mx^2 + my^2)*pi^2*t{l}(n)) .* ...
+        psixct_n{l} = exp(-1i*(mx^2 + my^2)*pi^2*t{l}(n)) * ...
                       sin(mx*pi*X{l}) .* sin(my*pi*Y{l});
         psixct{l}(n, :, :) = reshape(psixct_n{l}, [1, nx{l}, ny{l}]);
     end
