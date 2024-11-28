@@ -116,11 +116,14 @@ function [x y t psi psire psiim psimod v] = ...
             f = zeros(nx,1);
 
             % Compute RHS of first ADI eqn in stages. 
-            % Ensure boundary conditions are maintained by using 2:nx-1
             f(2:nx-1) = (1i*dt/(2*dy^2)) * (psi_n(2:nx-1, j+1) + psi_n(2:nx-1, j-1)) ...
                       + (1 - 1i*dt*(1/dy^2 + v(2:nx-1,j)/2)) .* psi_n(2:nx-1, j);
             f(2:nx-1) = (1i*dt/(2*dx^2)) * (f(1:nx-2) + f(3:nx)) + ...
                         (1 - 1i*dt/dx^2) * f(2:nx-1);
+
+            % Impose boundary conditions
+            f(1) = 0.0;
+            f(nx) = 0.0;
 
             % Solve first ADI system
             psi_half(:,j) = A_half \ f;
@@ -136,7 +139,7 @@ function [x y t psi psire psiim psimod v] = ...
         du = dl;
         % Impose boundary conditions
         du(2)    = 0.0;
-        dl(nx-1) = 0.0;
+        dl(ny-1) = 0.0;
 
         % Solve tridiagonal system for each i (column)
         for i = 2:nx-1
@@ -145,12 +148,12 @@ function [x y t psi psire psiim psimod v] = ...
             d = 1 + 1i*dt/dy^2 + (1i*dt/2)*v_i;
             % Impose boundary conditions 
             d(1)  = 1.0;
-            d(nx) = 1.0;
+            d(ny) = 1.0;
 
             % Compute sparse matrix for second ADI eqn
             A_full = spdiags([dl d du], -1:1, ny, ny);
 
-            % Compute RHS of second ADI eqn 
+            % Compute RHS of second ADI eqn. BCs already imposed previously
             f = reshape(psi_half(i,:), ny, 1);
 
             % Solve second ADI system
