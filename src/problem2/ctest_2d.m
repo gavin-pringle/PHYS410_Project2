@@ -12,7 +12,7 @@ format long;
 tmax = 0.05;
 % Discretization levels
 minlevel = 6;
-maxlevel = 7; % CHANGE THIS!!!!
+maxlevel = 9;
 % Delta t by Delta x ratio
 lambda = 0.05;
 
@@ -51,5 +51,57 @@ for l = minlevel : maxlevel
     Epsi{l} = psixct{l} - psi{l};
     Epsi_2d{l} = reshape(Epsi{l}, nt{l}, nx{l}*ny{l});
     rms_Epsi{l} = rms(abs(Epsi_2d{l}), 2);
+
+    % Downsample each psi for differencing 
+    psi_ds{l} = psi{l}(1:2:end, 1:2:end, 1:2:end);
+
+    % Flatten each 3d array into a 2d array
+    psi_2d{l} = reshape(psi{l}, nt{l}, nx{l}*ny{l});
+    psi_ds_2d{l} = reshape(psi_ds{l}, (nt{l}-1)/2+1, ...
+                          ((nx{l}-1)/2+1)*((nx{l}-1)/2+1));
 end
 
+% Calculating the level-to-level differences, taking every second 
+% value of the larger length array
+dpsi6 = psi_ds_2d{7} - psi_2d{6}; 
+dpsi7 = psi_ds_2d{8} - psi_2d{7}; 
+dpsi8 = psi_ds_2d{9} - psi_2d{8}; 
+
+% Compute l-2 norm of each dpsi, resulting in functions of t
+rms_dpsi6 = rms(abs(dpsi6), 2);
+rms_dpsi7 = rms(abs(dpsi7), 2);
+rms_dpsi8 = rms(abs(dpsi8), 2);
+
+% Plot scaled errors for different discretization levels
+fig1 = figure;
+rho = 4;
+hold on 
+plot(t{6}, rms_dpsi6, 'LineWidth', 2);
+plot(t{7}, rho*rms_dpsi7, 'LineWidth', 2);
+plot(t{8}, rho^2*rms_dpsi8, 'LineWidth', 2);
+xlabel("Time");
+ylabel("l-2 norm of difference between level");
+legend('||dΨ^6||', '4 * ||dΨ^7||', '4^2 * ||dΨ^8||', 'Location', 'best');
+title({"2d Schrodinger equation convergence test - Exact family"
+       "l-2 norm of difference between level l solutions"
+       "idtype = 0, vtype = 0, tmax = 0.05, lambda = 0.05, 6 <= l <= 9"});
+ax = gca;
+ax.FontSize = 12;
+
+% Plot scaled exact errors for different discretization levels
+fig2 = figure;
+rho = 4;
+hold on 
+plot(t{6}, rms_Epsi{6}, 'LineWidth', 2);
+plot(t{7}, rho*rms_Epsi{7}, 'LineWidth', 2);
+plot(t{8}, rho^2*rms_Epsi{8}, 'LineWidth', 2);
+plot(t{9}, rho^3*rms_Epsi{9}, 'LineWidth', 2);
+xlabel("Time");
+ylabel("l-2 norm of exact error");
+legend('||EΨ^6||', '4 * ||EΨ^7||', '4^2 * ||EΨ^8||', '4^3 * ||EΨ^9||'...
+        , 'Location', 'best');
+title({"2d Schrodinger equation convergence test - Exact family"
+       "l-2 norm of exact error for each level l"
+       "idtype = 0, vtype = 0, tmax = 0.05, lambda = 0.05, 6 <= l <= 9"});
+ax = gca;
+ax.FontSize = 12;
