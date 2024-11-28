@@ -31,7 +31,7 @@ vpar = zeros(1,3);
 for l = minlevel : maxlevel
     % Compute the solution
     [x{l} t{l} psi{l} psire{l} psiim{l} psimod{l} prob{l} v{l}] ...
-        = sch_1d_cn(tmax, l, lambda, idtype, idpar, vtype, vpar);
+        = sch_1d_cn(tmax, l, lambda, idtype, idpar, vtype, vpar)
 
     [nt{l}, nx{l}] = size(psi{l});
 
