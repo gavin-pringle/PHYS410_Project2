@@ -1,4 +1,4 @@
-%% 1.5.2 - Well Survey
+%% 1.5.2 - 1d Well Survey
 
 close all;
 clear; clc;

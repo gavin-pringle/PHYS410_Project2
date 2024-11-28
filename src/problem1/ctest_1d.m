@@ -1,4 +1,4 @@
-%% 1.4 - Convergence Testing
+%% 1.4 - 1d Convergence Testing
 
 close all;
 clear; clc;

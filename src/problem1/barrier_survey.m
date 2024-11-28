@@ -1,4 +1,4 @@
-%% 1.5.1 - Barrier Survey
+%% 1.5.1 - 1d Barrier Survey
 
 close all;
 clear; clc;
