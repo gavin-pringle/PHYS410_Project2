@@ -1,4 +1,4 @@
-%% 2.5 - 2d video of scattering off rectangular barrier
+%% 2.5 - 2d Video of Scattering off Rectangular Barrier
 
 close all;
 clear; clc;
@@ -7,7 +7,7 @@ format long;
 % Simulation maximum time 
 tmax = 0.05;
 % Discretization level
-level = 7;
+level = 8;
 % Delta t by Delta x ratio
 lambda = 0.05;
 
@@ -53,13 +53,13 @@ for n = 1:nt
     xlabel('x');
     ylabel('y');
     title({'2d Schrodinger Equation Simulation'
-           '|ψ| Scattering off a rectangular barrier' 
+           '|ψ| Scattering off a Rectangular Barrier' 
            ['tmax = ', num2str(tmax), ', level = ', num2str(level), ...
             ', lambda = ', num2str(lambda), ', idpar = [', ...
             num2str(idpar(1)), ' ', num2str(idpar(2)), ' ', ...
             num2str(idpar(3)), ' ', num2str(idpar(4)), ' ', ...
             num2str(idpar(5)), ' ', num2str(idpar(6)), ']']
-          ['Time step n = ', num2str(n)]});
+          ['Time Step n = ', num2str(n)]});
     ax = gca;
     ax.FontSize = 12;
     
@@ -67,6 +67,12 @@ for n = 1:nt
     axis([1 nx 1 ny]);
     % Set color axis limits to match data range
     clim([min(psimod(:)) max(psimod(:))]);
+
+    % Scale the axes tick labels to range from 0 to 1
+    xticks(linspace(1, nx, 11));
+    yticks(linspace(1, ny, 11));
+    xticklabels(linspace(0, 1, 11));
+    yticklabels(linspace(0, 1, 11));
     
     % Write to video file
     frame = getframe(gcf);
