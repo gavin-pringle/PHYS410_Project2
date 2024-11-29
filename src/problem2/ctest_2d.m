@@ -40,6 +40,11 @@ for l = minlevel : maxlevel
     for n = 1 : nt{l}
         psixct_n{l} = exp(-1i*(mx^2 + my^2)*pi^2*t{l}(n)) * ...
                       sin(mx*pi*X{l}) .* sin(my*pi*Y{l});
+        % Enforce boundary conditions
+        psixct_n{l}(1, :)     = 0.0;
+        psixct_n{l}(:, 1)     = 0.0;
+        psixct_n{l}(nx{l}, :) = 0.0;
+        psixct_n{l}(:, ny{l}) = 0.0;
         psixct{l}(n, :, :) = reshape(psixct_n{l}, [1, nx{l}, ny{l}]);
     end
 
@@ -54,7 +59,7 @@ for l = minlevel : maxlevel
     % Flatten each 3d array into a 2d array
     psi_2d{l} = reshape(psi{l}, nt{l}, nx{l}*ny{l});
     psi_ds_2d{l} = reshape(psi_ds{l}, (nt{l}-1)/2+1, ...
-                          ((nx{l}-1)/2+1)*((nx{l}-1)/2+1));
+                          ((nx{l}-1)/2+1)*((ny{l}-1)/2+1));
 end
 
 % Calculating the level-to-level differences, taking every second 
