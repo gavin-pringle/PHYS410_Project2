@@ -83,9 +83,9 @@ function [x y t psi psire psiim psimod v] = ...
         j_prime = (ny - 1)/4 + 1;
 
         % Calculate V(x, y)
-        Vc_indices = (X <= x1) | (X >= x2 & X <= x3) | (X >= x4);
-        v(Vc_indices, j_prime) = Vc;
-        v(Vc_indices, j_prime + 1) = Vc;
+        Vc_indices = (x <= x1) | (x >= x2 & x <= x3) | (x >= x4);
+        v(j_prime, Vc_indices) = Vc;
+        v(j_prime + 1, Vc_indices) = Vc;
     else
         fprintf('sch_2d_adi: Invalid vtype=%d\n', vtype);
         return
