@@ -21,11 +21,12 @@ idpar = [0.5, 0.3, 0.1, 0.1, 0.0, 30];
 
 % vtype = 0   ->  No potential
 % vtype = 1   ->  Rectangular barrier or well
+% vtype = 2   ->  Double Slit
 vtype = 1;
-%x_min = vpar(1);   x_max = vpar(2);    
-%y_min = vpar(3);   y_max = vpar(4); 
+x_min = 0.2;   x_max = 0.8;    
+y_min = 0.7;   y_max = 0.8; 
 %Vc    = vpar(5); 
-vpar = [0.2, 0.8, 0.7, 0.8, 1e8];
+vpar = [x_min, x_max, y_min, y_max, 1e8];
 
 % Compute solution 
 [x y t psi psire psiim psimod v] = ...
@@ -39,7 +40,13 @@ video = VideoWriter('../../output/problem2/rec_bar.avi');
 video.FrameRate = 30; 
 open(video);
 
+% Create a figure and define where the rectangle indicating where
+% the potential barrier is will be drawn
 figure;
+rect_xmin = x_min * (nx - 1) + 1;
+rect_ymin = y_min * (ny - 1) + 1;
+rect_xlen = (x_max - x_min) * (nx - 1);
+rect_ylen = (y_max - y_min) * (ny - 1);
 
 % Loop over time steps
 for n = 1:nt
@@ -48,11 +55,10 @@ for n = 1:nt
     
     % Create filled contour plot
     contourf(psi_n, 20, 'LineStyle', 'none');
-    colorbar; % Add colorbar for reference
     colormap("default");
     xlabel('x');
     ylabel('y');
-    title({'2d Schrodinger Equation Simulation'
+    title({'2d Schrödinger Equation Simulation'
            '|ψ| Scattering off a Rectangular Barrier' 
            ['tmax = ', num2str(tmax), ', level = ', num2str(level), ...
             ', lambda = ', num2str(lambda), ', idpar = [', ...
@@ -73,6 +79,10 @@ for n = 1:nt
     yticks(linspace(1, ny, 11));
     xticklabels(linspace(0, 1, 11));
     yticklabels(linspace(0, 1, 11));
+
+    % Draw rectangle where the potential is 
+    rectangle('Position', [rect_xmin, rect_ymin, rect_xlen, rect_ylen], ...
+              'EdgeColor', 'black', 'LineWidth', 1);
     
     % Write to video file
     frame = getframe(gcf);
@@ -81,4 +91,3 @@ end
 
 % Close the video file and figure
 close(video);
-close(gcf);

@@ -23,10 +23,10 @@ idpar = [0.5, 0.5, 0.08, 0.08, 0.0, -30];
 % vtype = 1   ->  Rectangular barrier or well
 % vtype = 2   ->  Double Slit
 vtype = 2;
-%x1 = vpar(1);   x2 = vpar(2);    
-%x3 = vpar(3);   x4 = vpar(4); 
-%Vc = vpar(5); 
-vpar = [0.48, 0.49, 0.51, 0.52, 1e8];
+x1 = 0.48;   x2 = 0.49;    
+x3 = 0.51;   x4 = 0.52; 
+%Vc    = vpar(5); 
+vpar = [x1, x2, x3, x4, 1e8];
 
 % Compute solution 
 [x y t psi psire psiim psimod v] = ...
@@ -40,6 +40,7 @@ video = VideoWriter('../../output/problem2/double_slit.avi');
 video.FrameRate = 30; 
 open(video);
 
+% Create a figure
 figure;
 
 % Loop over time steps
@@ -52,7 +53,7 @@ for n = 1:nt
     colormap("default");
     xlabel('x');
     ylabel('y');
-    title({'2d Schrodinger Equation Simulation'
+    title({'2d Schrödinger Equation Simulation'
            '|ψ| Scattering through Double Slits' 
            ['tmax = ', num2str(tmax), ', level = ', num2str(level), ...
             ', lambda = ', num2str(lambda), ', idpar = [', ...
@@ -73,7 +74,17 @@ for n = 1:nt
     yticks(linspace(1, ny, 11));
     xticklabels(linspace(0, 1, 11));
     yticklabels(linspace(0, 1, 11));
-    
+
+    % Draw rectangles where the double slit potential is 
+    hold on 
+    rectangle('Position', [1, (ny - 1)/4 + 1, floor(x1*nx), 1], ...
+              'EdgeColor', 'black', 'LineWidth', 1);
+    rectangle('Position', [ceil(x2*nx), (ny - 1)/4 + 1, ceil((x3 - x2)*nx), 1], ...
+              'EdgeColor', 'black', 'LineWidth', 1);
+    rectangle('Position', [ceil(x4*nx), (ny - 1)/4 + 1, floor((1 - x4)*nx), 1], ...
+              'EdgeColor', 'black', 'LineWidth', 1);
+    hold off
+
     % Write to video file
     frame = getframe(gcf);
     writeVideo(video, frame);
@@ -81,4 +92,3 @@ end
 
 % Close the video file and figure
 close(video);
-close(gcf);
