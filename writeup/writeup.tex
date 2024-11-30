@@ -86,6 +86,7 @@ self-interference through a double slit are created using the scripts \code{vide
 
 \subsubsection*{1d Schrödinger Equation}
 
+The 1d Schrödinger Equation PDE is given by the following equation:
 % PDE and BCs
 
 % family of exact solutions 
@@ -116,6 +117,17 @@ self-interference through a double slit are created using the scripts \code{vide
 \subsubsection*{2d Schrödinger Equation}
 
 % ADI equation
+\begin{align}\label{ADI_1}
+\left( 1 - i \frac{\Delta t}{2} \partial_{xx}^h \right) \psi_{i,j}^{n+\frac{1}{2}} &=
+\left( 1 + i \frac{\Delta t}{2} \partial_{xx}^h \right)
+\left( 1 + i \frac{\Delta t}{2} \partial_{yy}^h - i \frac{\Delta t}{2} V_{i,j} \right) \psi_{i,j}^n,
+\nonumber \\ i &= 2,3,\ldots,n_x-1, \quad j = 2,3,\ldots,n_y-1, \quad n = 1,2,\ldots,n_t-1.
+\end{align}
+\begin{align}\label{ADI_2}
+\left( 1 - i \frac{\Delta t}{2} \partial_{yy}^h + i \frac{\Delta t}{2} V_{i,j} \right) 
+\psi_{i,j}^{n+1} &= \psi_{i,j}^{n+\frac{1}{2}},
+\nonumber \\ i = 2,3,\ldots,n_x-1, \quad j &= 2,3,\ldots,n_y-1, \quad n = 1,2,\ldots,n_t-1.
+\end{align}
 
 % Expanded LHS form for finding tridiagonal coefficients 
 
