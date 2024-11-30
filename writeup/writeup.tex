@@ -51,7 +51,11 @@
     numberstyle={\tiny \color{black}},% size of the numbers
     numbersep=9pt, % this defines how far the numbers are from the text
     emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
-    %emph=[2]{word1,word2}, emphstyle=[2]{style},    
+    %emph=[2]{word1,word2}, emphstyle=[2]{style},
+    literate=%
+        {ö}{{\"o}}1 % Maps ö to its LaTeX representation
+        {Ψ}{{$\Psi$}}1 % Maps Ψ to its LaTeX representation 
+        {ψ}{{$\psi$}}1 % Maps ψ to its LaTeX representation       
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -59,13 +63,29 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Introduction}
 
-asdf
+% Problem statement 
+
+% Introduce how code will be tested - name files
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Review of Theory
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Review of Theory}
 
+\subsubsection*{1d Schrödinger Equation}
+
+% PDE and BCs
+
+% family of exact solutions 
+
+% Include running integral
+
+
+\subsubsection*{2d Schrödinger Equation}
+
+% PDE and BCs
+
+% family of exact solutions 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -73,6 +93,21 @@ asdf
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Numerical Approach}
 
+\subsubsection*{1d Schrödinger Equation}
+
+% CN equation
+
+% Expanded form for finding tridiagonal coefficients 
+
+% Potentials
+
+\subsubsection*{2d Schrödinger Equation}
+
+% ADI equation
+
+% Expanded LHS form for finding tridiagonal coefficients 
+
+% Potentials
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -80,13 +115,30 @@ asdf
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Implementation}
 
+\subsubsection*{1d Tridiagonal System}
 
+% Reference sch_1d_cn  
+
+\subsubsection*{2d Tridiagonal System}
+
+% Reference sch_2d_adi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Results
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Results}
 
+\subsubsection*{1d Schrödinger Equation}
+
+% Describe convergence test (don't need to explain from scratch) and show results
+
+% Describe surveys (explain what lnFe is) and show results 
+
+\subsubsection*{2d Schrödinger Equation}
+
+% Describe convergence test (don't need to explain from scratch) and show results
+
+% Describe numerical experiments, show a screenshot from each (double slit show interference)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -94,16 +146,54 @@ asdf
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Conclusions}
 
+% Summarize work 
+% Discuss how mostly successful except for perhaps well survey.
 
+% Talk about performance issues. Could fix by preallocatting memory and using parallel computation.
+
+Generative AI was used to help with understanding how to use MATLAB's \code{contourf} function for 
+making videos of numerical experiments in 2d. It was also used for help with typesetting this document.
 
 \pagebreak
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Appendix A - charges.m Code
+% Appendices
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{Appendix A - charges.m Code}
 
+\subsection*{Appendix A - sch\_1d\_cn.m Code}
+\lstinputlisting{../src/problem1/sch_1d_cn.m}
 \pagebreak
 
+\subsection*{Appendix B - ctest\_1d.m Code}
+\lstinputlisting{../src/problem1/ctest_1d.m}
+\pagebreak
+
+\subsection*{Appendix C - barrier\_survey.m Code}
+\lstinputlisting{../src/problem1/barrier_survey.m}
+\pagebreak
+
+\subsection*{Appendix D - well\_survey.m Code}
+\lstinputlisting{../src/problem1/well_survey.m}
+\pagebreak
+
+\subsection*{Appendix E - sch\_2d\_adi.m Code}
+\lstinputlisting{../src/problem2/sch_2d_adi.m}
+\pagebreak
+
+\subsection*{Appendix F - ctest\_2d.m Code}
+\lstinputlisting{../src/problem2/ctest_2d.m}
+\pagebreak
+
+\subsection*{Appendix G - video\_rec\_bar.m Code}
+\lstinputlisting{../src/problem2/video_rec_bar.m}
+\pagebreak
+
+\subsection*{Appendix H - video\_rec\_well.m Code}
+\lstinputlisting{../src/problem2/video_rec_well.m}
+\pagebreak
+
+\subsection*{Appendix I - video\_double\_slit.m Code}
+\lstinputlisting{../src/problem2/video_double_slit.m}
+\pagebreak
 
 \end{document}
