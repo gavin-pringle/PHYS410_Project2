@@ -87,12 +87,34 @@ self-interference through a double slit are created using the scripts \code{vide
 \subsubsection*{1d Schrödinger Equation}
 
 The 1d Schrödinger Equation PDE is given by the following equation:
-% PDE and BCs
+\begin{equation}\label{sch_1d}
+i\psi(x,t)_t = -\psi_{xx} + V(x,t)\psi
+\end{equation}
+where the wave function, $\psi(x,t)$, is complex. The equation is to be solved on the domain
+$$0\leq x \leq 1, \quad 0 \leq t \leq t_{\textrm{max}}$$
+subject to initial and boundary conditions
+\begin{equation}\label{sch_1d_IC}
+\psi(x,0) = \psi_0(x)
+\end{equation}
+\begin{equation}\label{sch_1d_BC}
+\psi(0,t) = \psi(1,t) = 0
+\end{equation}
 
-% family of exact solutions 
+The family of exact solutions to (\ref{sch_1d}) is
+\begin{equation}\label{1d_exact_soln}
+\psi(x,t) = e^{-i m^2 \pi^2 t} \sin(m \pi x)
+\end{equation}
+where m is a positive integer. 
 
-% Include running integral
-
+Since the modulus squared of the wave function represents the probability density, 
+$\rho = |\psi|^2 = \psi \psi^*$, the "running integral" of the probability density represents
+the probability that the particle is to the left of $x$ at any given time $t$:
+\begin{equation}\label{prob_den}
+P(x,t) = \int_0^x \psi(\tilde{x}, t) \psi^*(\tilde{x}, t) d\tilde{x}
+\end{equation}
+Note that equation (\ref{prob_den}) only computes the correct probability if the wave function is properly 
+normalized such that $P(1,t) = 1$. Even if it is not so normalized, we should have
+$$P(1,t) = \textrm{conserved to level of solution error}$$
 
 \subsubsection*{2d Schrödinger Equation}
 
