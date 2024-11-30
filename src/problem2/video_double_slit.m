@@ -17,7 +17,7 @@ idtype = 1;
 %x0      = idpar(1);      y0 = idpar(2);    
 %delta_x = idpar(3); delta_y = idpar(4); 
 %p_x     = idpar(5);     p_y = idpar(6);   
-idpar = [0.5, 0.5, 0.08, 0.08, 0.0, -30];
+idpar = [0.5, 0.0, 0.08, 0.08, 0.0, 60];
 
 % vtype = 0   ->  No potential
 % vtype = 1   ->  Rectangular barrier or well
