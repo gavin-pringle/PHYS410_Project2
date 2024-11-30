@@ -63,9 +63,21 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Introduction}
 
-% Problem statement 
+In this project, the time-dependent Schrödinger equation is solved numerically in both one dimension
+and two dimensions. In both cases, solutions account for a time-independent potential term $V$, which
+takes the form of a rectangular barrier or well, a double slit (in 2d only), or is zero everywhere. 
+The MATLAB script \code{sch\_1d\_cn.m} implements the Crank-Nicolson discretization approach to solve 
+the Schrödinger equation in 1d, while the script \code{sch\_2d\_adi.m} implements the 
+alternating-direction-implicit (ADI) method to solve the equation in 2d. 
 
-% Introduce how code will be tested - name files
+The 1d case is tested by conducting convergence testing in the file \code{ctest\_1d.m} which checks 
+for solution convergence among increasing discretization levels. A similar convergence test is done 
+for two dimensions in the file \code{ctest\_2d.m}. For the 1d case, the solution "excess fractional
+probability" is also examined in the files \code{barrier\_survey.m} and \code{well\_survey.m}, which
+provides insights into how much time the quantum particle is spending in a certain location. Lastly,
+videos of the 2d wave function scattering off a rectangular barrier or well, and producing 
+self-interference through a double slit are created using the scripts \code{video\_rec\_bar.m},
+\code{video\_rec\_well.m}, and \code{video\_double\_slit.m}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Review of Theory
