@@ -144,29 +144,34 @@ A family of exact solutions to (\ref{sch_2d}) is given by
 
 \subsubsection*{1d Schrödinger Equation}
 
-% CHANGE THISSSSS!!!!!
-\begin{align}
-    i \frac{\psi_j^{n+1} - \psi_j^n}{\Delta t} &= \frac{1}{2} \left( 
-    \frac{\psi_{j+1}^{n+1} - 2\psi_j^{n+1} + \psi_{j-1}^{n+1}}{\Delta x^2} 
-    + \frac{\psi_{j+1}^n - 2\psi_j^n + \psi_{j-1}^n}{\Delta x^2} \right) \\
-    &\quad + \frac{1}{2} V_j^{n+\frac{1}{2}} \left(\psi_j^{n+1} + \psi_j^n \right), \quad j = 2, 3, \dots, n_x - 1, \, n = 1, 2, \dots, n_t - 1, \\[10pt]
-    \psi_1^{n+1} &= \psi_{n_x}^{n+1} = 0, \quad n = 1, 2, \dots, n_t - 1, \\[10pt]
-    \psi_j^1 &= \psi_0(x_j), \quad j = 1, 2, \dots, n_x.
-\end{align}
 % CN equation
 
-% Expanded form for finding tridiagonal coefficients 
+\begin{align}\label{CN}
+i \frac{\psi_j^{n+1} - \psi_j^n}{\Delta t} = \frac{1}{2} \left( 
+\frac{\psi_{j+1}^{n+1} - 2\psi_j^{n+1} + \psi_{j-1}^{n+1}}{\Delta x^2} 
++ \frac{\psi_{j+1}^n - 2\psi_j^n + \psi_{j-1}^n}{\Delta x^2} \right)
+&+ \frac{1}{2} V_j^{n+\frac{1}{2}} \left(\psi_j^{n+1} + \psi_j^n \right) \nonumber \\
+j = 2, 3, \dots, n_x - 1, \, n = 1, 2, \dots, n_t &- 1
+\end{align}
+
+$$\psi_1^{n+1} = \psi_{n_x}^{n+1} = 0, \quad n = 1, 2, \dots, n_t - 1$$
+$$\psi_j^1 = \psi_0(x_j), \quad j = 1, 2, \dots, n_x$$
+
+% Expanded form for finding tridiagonal coefficients
+
+\begin{align}\label{CN_rearranged}
+\frac{1}{2 \Delta x^2}\psi_{j+1}^{n+1} + & \left( \frac{i}{\Delta t} - \frac{1}{\Delta x^2}
+-\frac{1}{2}V_j \right) \psi_j^{n+1} + \frac{1}{2 \Delta x^2} \psi_{j-1}^{n+1} \\
+& = -\frac{1}{2 \Delta x^2} \psi_{j+1}^n + \left(\frac{i}{\Delta t} + \frac{1}{\Delta x^2}
++ \frac{1}{2}V_j \right) \psi_j^n - \frac{1}{2 \Delta x^2} \psi_{j-1}^n
+\end{align}
 
 % Potentials
 
 \subsubsection*{2d Schrödinger Equation}
 
-% CHANGE THISSSSS!!!!!
-\begin{align*}
-    \partial_{xx}^h u_{i,j}^n &\equiv \frac{u_{i+1,j}^n - 2u_{i,j}^n + u_{i-1,j}^n}{\Delta x^2}, \\[10pt]
-    \partial_{yy}^h u_{i,j}^n &\equiv \frac{u_{i,j+1}^n - 2u_{i,j}^n + u_{i,j-1}^n}{\Delta y^2}.
-\end{align*}
-
+$$\partial_{xx}^h u_{i,j}^n \equiv \frac{u_{i+1,j}^n - 2u_{i,j}^n + u_{i-1,j}^n}{\Delta x^2}$$
+$$\partial_{yy}^h u_{i,j}^n \equiv \frac{u_{i,j+1}^n - 2u_{i,j}^n + u_{i,j-1}^n}{\Delta y^2}$$
 
 % ADI equation
 \begin{align}\label{ADI_1}
@@ -182,6 +187,19 @@ A family of exact solutions to (\ref{sch_2d}) is given by
 \end{align}
 
 % Expanded LHS form for finding tridiagonal coefficients 
+
+\begin{equation}\label{n_half_LHS}
+-\frac{i \Delta t}{2 \Delta x^2} \psi_{i+1,j}^{n+\frac{1}{2}} + \left(1 + 
+\frac{i \Delta t}{\Delta x^2} \right) \psi_{i,j}^{n+\frac{1}{2}} - \frac{i \Delta t}{2 \Delta x^2} 
+\psi_{i-1,j}^{n+\frac{1}{2}}
+\end{equation}
+
+% NOT DONE YET
+\begin{equation}\label{n_half_RHS_1}
+\frac{i \Delta t}{2 \Delta y^2} \psi_{i,j+1}^{n} + \left(1 + 
+\frac{i \Delta t}{\Delta x^2} \right) \psi_{i,j}^{n+\frac{1}{2}} - \frac{i \Delta t}{2 \Delta x^2} 
+\psi_{i-1,j}^{n+\frac{1}{2}}
+\end{equation}
 
 % Potentials
 
