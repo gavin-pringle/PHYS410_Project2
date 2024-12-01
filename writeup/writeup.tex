@@ -112,8 +112,8 @@ the probability that the particle is to the left of $x$ at any given time $t$:
 \begin{equation}\label{prob_den}
 P(x,t) = \int_0^x \psi(\tilde{x}, t) \psi^*(\tilde{x}, t) d\tilde{x}
 \end{equation}
-Note that equation (\ref{prob_den}) only computes the correct probability if the wave function is properly 
-normalized such that $P(1,t) = 1$. Even if it is not so normalized, we should have
+Note that equation (\ref{prob_den}) only computes the correct probability if the wave function 
+is properly normalized such that $P(1,t) = 1$. Even if it is not so normalized, we should have
 $$P(1,t) = \textrm{conserved to level of solution error}$$
 
 \subsubsection*{2d Schrödinger Equation}
@@ -144,6 +144,15 @@ A family of exact solutions to (\ref{sch_2d}) is given by
 
 \subsubsection*{1d Schrödinger Equation}
 
+% CHANGE THISSSSS!!!!!
+\begin{align}
+    i \frac{\psi_j^{n+1} - \psi_j^n}{\Delta t} &= \frac{1}{2} \left( 
+    \frac{\psi_{j+1}^{n+1} - 2\psi_j^{n+1} + \psi_{j-1}^{n+1}}{\Delta x^2} 
+    + \frac{\psi_{j+1}^n - 2\psi_j^n + \psi_{j-1}^n}{\Delta x^2} \right) \\
+    &\quad + \frac{1}{2} V_j^{n+\frac{1}{2}} \left(\psi_j^{n+1} + \psi_j^n \right), \quad j = 2, 3, \dots, n_x - 1, \, n = 1, 2, \dots, n_t - 1, \\[10pt]
+    \psi_1^{n+1} &= \psi_{n_x}^{n+1} = 0, \quad n = 1, 2, \dots, n_t - 1, \\[10pt]
+    \psi_j^1 &= \psi_0(x_j), \quad j = 1, 2, \dots, n_x.
+\end{align}
 % CN equation
 
 % Expanded form for finding tridiagonal coefficients 
@@ -151,6 +160,13 @@ A family of exact solutions to (\ref{sch_2d}) is given by
 % Potentials
 
 \subsubsection*{2d Schrödinger Equation}
+
+% CHANGE THISSSSS!!!!!
+\begin{align*}
+    \partial_{xx}^h u_{i,j}^n &\equiv \frac{u_{i+1,j}^n - 2u_{i,j}^n + u_{i-1,j}^n}{\Delta x^2}, \\[10pt]
+    \partial_{yy}^h u_{i,j}^n &\equiv \frac{u_{i,j+1}^n - 2u_{i,j}^n + u_{i,j-1}^n}{\Delta y^2}.
+\end{align*}
+
 
 % ADI equation
 \begin{align}\label{ADI_1}
@@ -192,13 +208,100 @@ A family of exact solutions to (\ref{sch_2d}) is given by
 
 % Describe convergence test (don't need to explain from scratch) and show results
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{problem1/ctest_1d-1.png}
+\caption{Output 1 of \code{ctest\_1d.m} - 
+l-2 norm of difference between discretization level solutions for exact family initial conditions.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{problem1/ctest_1d-2.png}
+\caption{Output 2 of \code{ctest\_1d.m} - 
+l-2 norm of exact error at each discretization level for exact family initial conditions.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{problem1/ctest_1d-3.png}
+\caption{Output 3 of \code{ctest\_1d.m} - 
+l-2 norm of difference between discretization level solutions for boosted Gaussian initial 
+conditions.}
+\end{figure}
+
 % Describe surveys (explain what lnFe is) and show results 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{problem1/barrier_1d.png}
+\caption{Output of \code{barrier\_1d.m} - 
+Log-log plot of excess fractional probability vs. $V_0$ for 1d potential barrier.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{problem1/well_1d.png}
+\caption{Output of \code{well\_1d.m} - 
+Log-log plot of excess fractional probability vs. $V_0$ for 1d potential well.}
+\end{figure}
 
 \subsubsection*{2d Schrödinger Equation}
 
 % Describe convergence test (don't need to explain from scratch) and show results
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{problem2/ctest_2d-1.png}
+\caption{Output 1 of \code{ctest\_2d.m} - 
+l-2 norm of difference between discretization level solutions.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{problem2/ctest_2d-2.png}
+\caption{Output 2 of \code{ctest\_2d.m} - 
+l-2 norm of exact error at each discretization level.}
+\end{figure}
+
 % Describe numerical experiments, show a screenshot from each (double slit show interference)
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{problem2/rec_bar_1.png}
+\caption{Screenshot of video produced by \code{video\_rec\_bar.m} - Initial conditions.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{problem2/rec_bar_2.png}
+\caption{Screenshot of video produced by \code{video\_rec\_bar.m} - Scattering off barrier.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{problem2/rec_well_1.png}
+\caption{Screenshot of video produced by \code{video\_rec\_well.m} - Initial conditions.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{problem2/rec_well_2.png}
+\caption{Screenshot of video produced by \code{video\_rec\_well.m} - Scattering off well.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{problem2/double_slit_1.png}
+\caption{Screenshot of video produced by \code{double\_slit\_well.m} - Initial conditions.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{problem2/double_slit_2.png}
+\caption{Screenshot of video produced by \code{double\_slit\_well.m} - 
+Self interference through slits.}
+\end{figure}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -212,7 +315,8 @@ A family of exact solutions to (\ref{sch_2d}) is given by
 % Talk about performance issues. Could fix by preallocatting memory and using parallel computation.
 
 Generative AI was used to help with understanding how to use MATLAB's \code{contourf} function for 
-making videos of numerical experiments in 2d. It was also used for help with typesetting this document.
+making videos of numerical experiments in 2d. It was also used for help with typesetting this 
+document.
 
 \pagebreak
 
