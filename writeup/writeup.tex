@@ -118,10 +118,24 @@ $$P(1,t) = \textrm{conserved to level of solution error}$$
 
 \subsubsection*{2d Schrödinger Equation}
 
-% PDE and BCs
+The 2d Schrödinger Equation PDE is given by the following equation:
+\begin{equation}\label{sch_2d}
+\psi_t = i(\psi_{xx} + \psi_{yy}) - iV(x,y)\psi
+\end{equation}
+where the wave function, $\psi(x,y,t)$, is complex. The equation is to be solved on the domain
+$$0\leq x \leq 1, \quad 0 \leq y \leq 1, \quad 0\leq t \leq t_{\textrm{max}}$$
+subject to initial and boundary conditions
+\begin{equation}\label{sch_2d_IC}
+\psi(x,y,0) = \psi_0(x,y)
+\end{equation}
+\begin{equation}\label{sch_2_BC}
+\psi(0,y,t) = \psi(1,y,t) = \psi(x,0,t) = \psi(x,1,t) = 0
+\end{equation}
 
-% family of exact solutions 
-
+A family of exact solutions to (\ref{sch_2d}) is given by
+\begin{equation}\label{2d_exact_soln}
+\psi(x,y,t) = e^{-i (m_x^2 + m_y^2) \pi^2 t} \sin(m_x \pi x) \sin(m_y \pi y)
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Numerical approach
