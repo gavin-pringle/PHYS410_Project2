@@ -144,8 +144,17 @@ A family of exact solutions to (\ref{sch_2d}) is given by
 
 \subsubsection*{1d Schrödinger Equation}
 
-% CN equation
+We discretize the domain by introducing the discretization level $l$, and the ratio of temporal to 
+mesh spacings $\lambda$. The script \code{sch\_1d\_cn.m} takes $t_{\textrm{max}}$, $l$, and $\lambda$ 
+as parameters.
+$$\lambda = \frac{\Delta t}{\Delta x}$$
+$$n_x = 2^l + 1$$
+$$\Delta x = 2^{-l}$$
+$$\Delta t = \lambda \Delta x$$
+$$n_t = \textrm{round} (t_{\textrm{max}} / \Delta t) + 1$$
 
+When the Crank-Nicolson discretization approach is applied to (\ref{sch_1d}) - (\ref{sch_1d_BC}), the 
+following relation is reached:  
 \begin{align}\label{CN}
 i \frac{\psi_j^{n+1} - \psi_j^n}{\Delta t} = \frac{1}{2} \left( 
 \frac{\psi_{j+1}^{n+1} - 2\psi_j^{n+1} + \psi_{j-1}^{n+1}}{\Delta x^2} 
@@ -154,19 +163,36 @@ i \frac{\psi_j^{n+1} - \psi_j^n}{\Delta t} = \frac{1}{2} \left(
 j = 2, 3, \dots, n_x - 1, \, n = 1, 2, \dots, n_t &- 1
 \end{align}
 
+which is subject to the initial and boundary conditions:
 $$\psi_1^{n+1} = \psi_{n_x}^{n+1} = 0, \quad n = 1, 2, \dots, n_t - 1$$
 $$\psi_j^1 = \psi_0(x_j), \quad j = 1, 2, \dots, n_x$$
 
-% Expanded form for finding tridiagonal coefficients
-
+If (\ref{CN}) is rearranged such that each term contains a singular $\psi$ term, we reach equation
+(\ref{CN_rearranged}). This is the equation that defines the tridiagonal system used for solving the 
+1d Schrödinger equation. 
 \begin{align}\label{CN_rearranged}
 \frac{1}{2 \Delta x^2}\psi_{j+1}^{n+1} + & \left( \frac{i}{\Delta t} - \frac{1}{\Delta x^2}
--\frac{1}{2}V_j \right) \psi_j^{n+1} + \frac{1}{2 \Delta x^2} \psi_{j-1}^{n+1} \\
+-\frac{1}{2}V_j \right) \psi_j^{n+1} + \frac{1}{2 \Delta x^2} \psi_{j-1}^{n+1} \nonumber \\
 & = -\frac{1}{2 \Delta x^2} \psi_{j+1}^n + \left(\frac{i}{\Delta t} + \frac{1}{\Delta x^2}
 + \frac{1}{2}V_j \right) \psi_j^n - \frac{1}{2 \Delta x^2} \psi_{j-1}^n
 \end{align}
 
-% Potentials
+The script \code{sch\_1d\_cn.m} additionally takes parameters \code{idtype}, \code{idpar}, 
+\code{vtype}, and \code{vpar}. \code{idtype} and \code{idpar} define the initial conditions, 
+which takes the form of an exact family for \code{idtype == 0}:
+$$\psi(x,0) = \sin(m \pi x)$$
+or of a boosted Gaussian for \code{idtype == 1}: 
+$$\psi(x,0) = e^{i p x} e^{-((x - x_0)/\delta)^2}$$
+\code{vtype} and \code{vpar} define the time-independent potential which takes the form of no 
+potential for \code{vtype == 0}:
+$$V(x) = 0$$
+or of a rectangular barrier or well for \code{vtype == 1}:
+$$V(x) =
+\begin{cases} 
+0 & \text{for } x < x_{\text{min}}, \\
+V_c & \text{for } x_{\text{min}} \leq x \leq x_{\text{max}}, \\
+0 & \text{for } x > x_{\text{max}}.
+\end{cases} $$
 
 \subsubsection*{2d Schrödinger Equation}
 
@@ -194,11 +220,14 @@ $$\partial_{yy}^h u_{i,j}^n \equiv \frac{u_{i,j+1}^n - 2u_{i,j}^n + u_{i,j-1}^n}
 \psi_{i-1,j}^{n+\frac{1}{2}}
 \end{equation}
 
-% NOT DONE YET
 \begin{equation}\label{n_half_RHS_1}
-\frac{i \Delta t}{2 \Delta y^2} \psi_{i,j+1}^{n} + \left(1 + 
-\frac{i \Delta t}{\Delta x^2} \right) \psi_{i,j}^{n+\frac{1}{2}} - \frac{i \Delta t}{2 \Delta x^2} 
-\psi_{i-1,j}^{n+\frac{1}{2}}
+\frac{i \Delta t}{2 \Delta y^2} \psi_{i,j+1}^{n} + \left(1 - i \Delta t \left(\frac{1}{\Delta y^2}
++ \frac{V_{i,j}}{2} \right) \right) \psi_{i,j}^n + \frac{i \Delta t}{2 \Delta y^2} \psi_{i,j-1}^n
+= f_i^*
+\end{equation}
+\begin{equation}\label{n_half_RHS_2}
+\frac{i \Delta t}{2 \Delta x^2} f_{i+1}^* + \left(1 - \frac{i \Delta t}{\Delta x^2} \right) f_i^*
++ \frac{i \Delta t}{2 \Delta x^2} f_{i-1}^* = f
 \end{equation}
 
 % Potentials
