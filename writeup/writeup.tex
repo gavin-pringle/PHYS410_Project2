@@ -438,7 +438,7 @@ conditions.}
 
 As described earlier, the running integral of the probability density can be taken to determine the 
 probability that the quantum particle is to the left of any spatial value $x$
-(equation (\ref{prob_den})), assuming proper normalization: $P(x) \rightarrow \bar{P(x)}$. 
+(equation (\ref{prob_den})), assuming proper normalization: $P(x) \rightarrow \bar{P}(x)$. 
 Given two values of $x$, we can then compute the probability that the particle lies \textit{between}
 $x_1$ and $x_2$. For a free particle, this probability is equal to the long-run fraction of time the 
 particle spends between $x_1$ and $x_2$. The \textit{excess fractional probability} that the particle
@@ -455,7 +455,7 @@ logarithm of the potential of the barrier or well.
 
 In Figure 4, we can see that the probability that the particle is to the left of the potential 
 barrier on $0.6 \leq x \leq 0.8$ decreases dramatically as the height of the potential barrier 
-increases. In Figure 5, we can see that probability that the particle is in the potential well
+increases. In Figure 5, we can see that the probability that the particle is in the potential well
 on $0.6 \leq x \leq 0.8$ oscillates as the depth of the potential well increases, with a general 
 trend towards spending \textit{less} time in the potential well as the depth of the well increases.
 
@@ -522,7 +522,7 @@ as \code{rec\_bar.mp4}.
 \end{figure}
 
 In Figures 10 and 11 below, the interaction of the boosted Gaussian wave function on a rectangular
-potential well is shown. The well is at a potential of 1e8 and is located in the black rectangle.
+potential well is shown. The well is at a potential of -1e8 and is located in the black rectangle.
 Figure 10, depicts the initial conditions, and Figure 11 depicts the 
 interaction with the well. We can see that the wave function reflects and scatters off of the well 
 almost identically to that of the barrier. This is strange, as we expect the wave function to become
@@ -540,7 +540,18 @@ trapped inside the well as it is at a lower potential. This could indicate a sig
 \caption{Screenshot of video produced by \code{video\_rec\_well.m} - Scattering off well.}
 \end{figure}
 
-In Figures 12 and 13 below, 
+In Figures 12 and 13 below, the interaction of the boosted Gaussian wave function on a thin double
+slit potential is shown. The double slit potential is two $y$ indices thick, is symmetric about $x$, 
+and has a potential of 1e8 where the black lines are drawn in Figures 12 and 13. In Figure 12, we 
+see the initial conditions - a boosted Gaussian wave function centered at $y=0$ moving in the 
+positive $y$ direction. In Figure 13, the effect of the double slit on this potential is shown - we 
+can see that most of the wave function reflects back off the potential but some gets through. The 
+part of the wave function that does get through undergoes self-interference, which is highlighted by 
+the red rectangle in Figure 13. This is clearly seen as the magnitude of $|\psi|$ oscillating across
+the $x$ axis. This gives some more confidence that the simulation is correct. For more information 
+on this phenomenon please visit 
+\href{https://en.wikipedia.org/wiki/Double-slit_experiment}{this Wikipedia page}. The full video is 
+saved as \code{double\_slit.mp4}.
 
 \begin{figure}[H]
 \centering
@@ -560,10 +571,24 @@ Self interference through slits.}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Conclusions}
 
-% Summarize work 
-% Discuss how mostly successful except for perhaps well survey.
+In this project, the time-dependent Schrödinger equation in one and two dimensions was numerically 
+computed, and simulations of 1d and 2d wave functions were produced. Convergence testing was done 
+in both 1d and 2d, and additional numerical experiments were also conducted for both 1d and 2d to 
+provide more insights on the accuracy of the produced numerical models and the underlying physical 
+phenomena. 
 
-% Talk about performance issues. Could fix by preallocatting memory and using parallel computation.
+Most convergence tests and numerical experiments yielded the expected results for 1d and 
+2d, indicating the models are correct. However, in the 2d case the exact solution error was quite large
+and did not show convergence among different discretization levels. Additionally, the simulation of a 
+boosted Gaussian wave function incident on a rectangular well in 2d did not show the wave function 
+becoming trapped in the well, but instead showed the well acting as a potential barrier. These two 
+experiments indicate there may be an issue with the 2d numerical model.
+
+Another issue preset throughout this project is that of computation time. The barrier and well surveys
+in 1d both took greater than 30 minutes to be computed, and the 2d simulations above $l=8$ took similar 
+periods of time to compute. This issue could likely be mitigated by optimizing the simulation and test
+code, for example by pre-allocating memory or utilizing parallel computation tools. This would allow 
+for faster code development and debugging. 
 
 Generative AI was used to help with understanding how to use MATLAB's \code{contourf} function for 
 making videos of numerical experiments in 2d. It was also used for help with typesetting this 
