@@ -498,7 +498,17 @@ l-2 norm of difference between discretization level solutions.}
 l-2 norm of exact error at each discretization level.}
 \end{figure}
 
+Using the scripts \code{video\_rec\_bar.m}, \code{video\_rec\_well.m}, and 
+\code{video\_double\_slit.m}, videos of boosted Gaussian wave functions interacting with 
+various produced. Please refer to Appendices G, H, and I for the full source code for these scripts,
+including all simulation parameters.
 
+In Figures 8 and 9 below, the interaction of the boosted Gaussian wave function on a rectangular
+potential barrier is shown. The barrier is at a potential of 1e8 and is located in the black rectangle.
+Figure 8, depicts the initial conditions, and Figure 9 depicts the 
+reflection and scattering off of the well. This reflection is what we expect to see, which
+indicates that the implementation of \code{sch\_2d\_adi.m} is correct. The full video is saved
+as \code{rec\_bar.mp4}.
 
 \begin{figure}[H]
 \centering
@@ -511,6 +521,14 @@ l-2 norm of exact error at each discretization level.}
 \caption{Screenshot of video produced by \code{video\_rec\_bar.m} - Scattering off barrier.}
 \end{figure}
 
+In Figures 10 and 11 below, the interaction of the boosted Gaussian wave function on a rectangular
+potential well is shown. The well is at a potential of 1e8 and is located in the black rectangle.
+Figure 10, depicts the initial conditions, and Figure 11 depicts the 
+interaction with the well. We can see that the wave function reflects and scatters off of the well 
+almost identically to that of the barrier. This is strange, as we expect the wave function to become
+trapped inside the well as it is at a lower potential. This could indicate a sign error somewhere in 
+\code{sch\_2d\_adi.m}, but this uncertain. The full video is saved as \code{rec\_well.mp4}.
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.75\textwidth]{problem2/rec_well_1.png}
@@ -521,6 +539,8 @@ l-2 norm of exact error at each discretization level.}
 \includegraphics[width=0.75\textwidth]{problem2/rec_well_2.png}
 \caption{Screenshot of video produced by \code{video\_rec\_well.m} - Scattering off well.}
 \end{figure}
+
+In Figures 12 and 13 below, 
 
 \begin{figure}[H]
 \centering
