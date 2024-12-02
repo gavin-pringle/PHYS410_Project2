@@ -474,7 +474,16 @@ Log-log plot of excess fractional probability vs. $V_0$ for 1d potential well.}
 
 \subsubsection*{2d Schrödinger Equation}
 
-As for the 1d cases, 
+As for the 1d case, convergence testing was done for the computed solutions to the 2d Schrödinger 
+equation, where the $l$-2 norm was taken across all spatial coordinates, $x$ and $y$. The results 
+are shown in Figures 6 and 7. In Figure 6, we see that there is convergence among the $l$-2 norm of
+the scaled differences between solutions at different discretization levels, indicating $O(h^2)$
+accuracy. However, in Figure 7, we do not see convergence for the $l$-2 norm of the exact solution
+errors, and in fact we see quite large errors that increase proportionally to the scaling factor. 
+This indicates that either the computed ADI solution, the computed exact solution, or both are 
+incorrect by some amount. Thorough debugging could not reveal what is causing this issue, although 
+it seems more likely to be caused by the way the exact solution is computed since we see convergence 
+for the solutions computed via \code{sch\_2d\_adi.m}.
 
 \begin{figure}[H]
 \centering
@@ -489,7 +498,7 @@ l-2 norm of difference between discretization level solutions.}
 l-2 norm of exact error at each discretization level.}
 \end{figure}
 
-% Describe numerical experiments, show a screenshot from each (double slit show interference)
+
 
 \begin{figure}[H]
 \centering
