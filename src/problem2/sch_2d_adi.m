@@ -110,7 +110,7 @@ function [x y t psi psire psiim psimod v] = ...
         % Create matrix for ψ^(n+1/2)
         psi_half = zeros(nx,ny);
 
-        % Solve tridiagonal system for each j (row)
+        % Solve tridiagonal system for each j (column)
         for j = 2:ny-1
             % Array for holding the RHS of the first ADI eqn
             f = zeros(nx,1);
@@ -141,7 +141,7 @@ function [x y t psi psire psiim psimod v] = ...
         du(2)    = 0.0;
         dl(ny-1) = 0.0;
 
-        % Solve tridiagonal system for each i (column)
+        % Solve tridiagonal system for each i (row)
         for i = 2:nx-1
             % Define middle sparse matrix diagonal for second ADI eqn
             v_i = reshape(v(i,:), ny, 1);

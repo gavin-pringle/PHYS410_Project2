@@ -335,6 +335,71 @@ Refer to Appendix A for the full implementation of \code{sch\_1d\_cn.m}.
 
 \subsubsection*{2d Tridiagonal System}
 
+For the 2d case, the first tridiagonal system is set up outside of the main loop that iterates once 
+per time step following equation (\ref{n_half_LHS}). The setup is similar to the 1d case:
+\begin{verbatim}
+% Define sparse matrix diagonals for first ADI eqn
+dl = (-1i*dt/(2*dx^2)) * ones(nx, 1);
+d  = (1 + 1i*dt/(dx^2)) * ones(nx, 1);
+du = dl;
+% Impose boundary conditions
+d(1)     = 1.0;
+du(2)    = 0.0;
+dl(nx-1) = 0.0;
+d(nx)    = 1.0;
+% Compute sparse matrix for first ADI eqn
+A_half = spdiags([dl d du], -1:1, nx, nx);
+\end{verbatim}
+
+Two consecutive nested loops are within the main loop that iterates once per time step. The first 
+of these loops solves the $n+\frac{1}{2}$ tridiagonal system for each column. Inside the loop, 
+the equations (\ref{n_half_RHS_1}) and (\ref{n_half_RHS_2}) are applied in stages: 
+\begin{verbatim}
+% Solve tridiagonal system for each j (column)
+for j = 2:ny-1
+    % Array for holding the RHS of the first ADI eqn
+    f = zeros(nx,1);
+
+    % Compute RHS of first ADI eqn in stages. 
+    f(2:nx-1) = (1i*dt/(2*dy^2)) * (psi_n(2:nx-1, j+1) + psi_n(2:nx-1, j-1)) ...
+                + (1 - 1i*dt*(1/dy^2 + v(2:nx-1,j)/2)) .* psi_n(2:nx-1, j);
+    f(2:nx-1) = (1i*dt/(2*dx^2)) * (f(1:nx-2) + f(3:nx)) + ...
+                (1 - 1i*dt/dx^2) * f(2:nx-1);
+\end{verbatim}
+
+The second of these loops solves the $n+1$ tridiagonal system for each row, corresponding to  
+equation (\ref{n_full}). The upper and lower diagonals are defined outside of this nested loop as 
+they do not depend on the row being solved for, but the middle sparse matrix diagonal is defined
+each nested loop iteration as the potential changes as \code{i} is iterated through. The last line
+of the code snippet below computes the complete solution for the next time step.
+\begin{verbatim}
+% Define upper and lower sparse matrix diagonals for second ADI eqn
+dl = (-1i*dt/(2*dy^2)) * ones(ny, 1);
+du = dl;
+% Impose boundary conditions
+du(2)    = 0.0;
+dl(ny-1) = 0.0;
+
+% Solve tridiagonal system for each i (row)
+for i = 2:nx-1
+    % Define middle sparse matrix diagonal for second ADI eqn
+    v_i = reshape(v(i,:), ny, 1);
+    d = 1 + 1i*dt/dy^2 + (1i*dt/2)*v_i;
+    % Impose boundary conditions 
+    d(1)  = 1.0;
+    d(ny) = 1.0;
+
+    % Compute sparse matrix for second ADI eqn
+    A_full = spdiags([dl d du], -1:1, ny, ny);
+
+    % Compute RHS of second ADI eqn. BCs already imposed previously
+    f = reshape(psi_half(i,:), ny, 1);
+
+    % Solve second ADI system
+    psi(n+1, i, :) = A_full \ f;
+\end{verbatim}
+
+These two loops form the complete ADI method for solving the 2d Schrödinger equation PDE.
 Refer to Appendix E for the full implementation of \code{sch\_2d\_adi.m}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
