@@ -22,7 +22,7 @@
 
 \def\code#1{\texttt{#1}} % Monospacing shortcut: Use \code{}
 
-\usepackage[colorlinks=true, urlcolor=blue, linkcolor=blue]{hyperref}
+\usepackage[colorlinks=true, urlcolor=blue, linkcolor=black]{hyperref}
 
 \usepackage{verbatim} % For including raw text files in the pdf
 \usepackage{float} % For keeping figures in the section where they were called 
@@ -273,7 +273,7 @@ $$\psi(x,y,0) = e^{i p_x x} e^{i p_y y} e^{-((x - x_0)^2 / \delta_x^2 + (y - y_0
 \code{vtype} and \code{vpar} define the time-independent potential which takes the form of no 
 potential for \code{vtype == 0}:
 $$V(x,y) = 0$$
-or of a rectangular barrier or well for \code{vtype == 1}:
+of a rectangular barrier or well for \code{vtype == 1}:
 $$V(x, y) = 
 \begin{cases} 
 V_c & \text{for } (x_{\min} \leq x \leq x_{\max}) \text{ and } (y_{\min} \leq y \leq y_{\max}) \\
@@ -294,11 +294,48 @@ $$V_{i,j} = 0 \quad \text{for} \quad j \neq (j' \ \text{or} \ j'+1)$$
 
 \subsubsection*{1d Tridiagonal System}
 
-% Reference sch_1d_cn  
+For the 1d case, the tridiagonal system is set up outside of the main loop that iterates once per time
+step following the left-hand-side of equation (\ref{CN_rearranged}). Boundary conditions are also 
+enforced by setting the coefficients in the first and last rows of the tridiagonal matrix. The sparse
+matrix is created by using MATLAB's \code{spdiags} function:
+\begin{verbatim}
+% Set up tridiagonal system
+dl = 0.5/dx^2 * ones(nx, 1);
+d  = (1i/dt - 1/dx^2 - 0.5*v.') .* ones(nx,1);
+du = dl;
+% Fix up boundary cases
+d(1) = 1.0;
+du(2) = 0.0;
+dl(nx-1) = 0.0;
+d(nx) = 1.0;
+% Define sparse matrix
+A = spdiags([dl d du], -1:1, nx, nx);
+\end{verbatim}
+
+The right-hand-side of equation (\ref{CN_rearranged}) defines the right-hand-side of the linear 
+system that is solved each time step, which is given the variable name \code{f}. The system is solved
+by using left-division. Boundary conditions are also enforced each time step by setting the first and
+last spatial values of $\psi$ to zero.
+\begin{verbatim}
+% Compute solution using CN scheme
+for n = 1 : nt-1
+    % Define RHS of linear system
+    f(2:nx-1) = psi(n, 2:nx-1) .* (1i/dt + 1/dx^2 + 0.5*v(2:nx-1)) ...
+                + (-0.5/dx^2) * (psi(n, 1:nx-2) + psi(n, 3:nx));
+    f(1) = 0.0;
+    f(nx) = 0.0;
+    % Solve system, thus updating approximation to next time step
+    psi(n+1, :) = A \ f;
+    % Set first and last values to zero
+    psi(n+1, 1) = 0; 
+    psi(n+1, nx) = 0; 
+\end{verbatim}
+
+Refer to Appendix A for the full implementation of \code{sch\_1d\_cn.m}.
 
 \subsubsection*{2d Tridiagonal System}
 
-% Reference sch_2d_adi
+Refer to Appendix E for the full implementation of \code{sch\_2d\_adi.m}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Results
