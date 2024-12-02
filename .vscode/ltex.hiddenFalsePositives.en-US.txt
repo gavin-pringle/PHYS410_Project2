@@ -1,0 +1,1 @@
+{"rule":"IN_A_X_MANNER","sentence":"^\\QFor the 2d case, the domain is discretized in a similar way.\\E$"}

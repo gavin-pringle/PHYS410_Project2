@@ -153,8 +153,8 @@ $$\Delta x = 2^{-l}$$
 $$\Delta t = \lambda \Delta x$$
 $$n_t = \textrm{round} (t_{\textrm{max}} / \Delta t) + 1$$
 
-When the Crank-Nicolson discretization approach is applied to (\ref{sch_1d}) - (\ref{sch_1d_BC}), the 
-following relation is reached:  
+When the Crank-Nicolson discretization approach is applied to equations (\ref{sch_1d}) - 
+(\ref{sch_1d_BC}), the following relation is reached:  
 \begin{align}\label{CN}
 i \frac{\psi_j^{n+1} - \psi_j^n}{\Delta t} = \frac{1}{2} \left( 
 \frac{\psi_{j+1}^{n+1} - 2\psi_j^{n+1} + \psi_{j-1}^{n+1}}{\Delta x^2} 
@@ -162,14 +162,14 @@ i \frac{\psi_j^{n+1} - \psi_j^n}{\Delta t} = \frac{1}{2} \left(
 &+ \frac{1}{2} V_j^{n+\frac{1}{2}} \left(\psi_j^{n+1} + \psi_j^n \right) \nonumber \\
 j = 2, 3, \dots, n_x - 1, \, n = 1, 2, \dots, n_t &- 1
 \end{align}
-
 which is subject to the initial and boundary conditions:
 $$\psi_1^{n+1} = \psi_{n_x}^{n+1} = 0, \quad n = 1, 2, \dots, n_t - 1$$
 $$\psi_j^1 = \psi_0(x_j), \quad j = 1, 2, \dots, n_x$$
 
 If (\ref{CN}) is rearranged such that each term contains a singular $\psi$ term, we reach equation
 (\ref{CN_rearranged}). This is the equation that defines the tridiagonal system used for solving the 
-1d Schrödinger equation. 
+1d Schrödinger equation. The method for implementing this equation in code is described later in the 
+implementation section.
 \begin{align}\label{CN_rearranged}
 \frac{1}{2 \Delta x^2}\psi_{j+1}^{n+1} + & \left( \frac{i}{\Delta t} - \frac{1}{\Delta x^2}
 -\frac{1}{2}V_j \right) \psi_j^{n+1} + \frac{1}{2 \Delta x^2} \psi_{j-1}^{n+1} \nonumber \\
@@ -196,10 +196,18 @@ V_c & \text{for } x_{\text{min}} \leq x \leq x_{\text{max}}, \\
 
 \subsubsection*{2d Schrödinger Equation}
 
-$$\partial_{xx}^h u_{i,j}^n \equiv \frac{u_{i+1,j}^n - 2u_{i,j}^n + u_{i-1,j}^n}{\Delta x^2}$$
-$$\partial_{yy}^h u_{i,j}^n \equiv \frac{u_{i,j+1}^n - 2u_{i,j}^n + u_{i,j-1}^n}{\Delta y^2}$$
+For the 2d case, the domain is discretized in a similar way by introducing the discretization 
+level $l$ and the ratio of temporal to mesh spacings $\lambda$. In the 2d scenario, we always 
+assume $x$ and $y$ steps are equal. The script \code{sch\_2d\_adi.m} takes $t_{\textrm{max}}$, $l$, 
+and $\lambda$ as parameters.
+$$\lambda = \frac{\Delta t}{\Delta x} = \frac{\Delta t}{\Delta y}$$
+$$n_x = n_y = 2^l + 1$$
+$$\Delta x = \Delta y = 2^{-l}$$
+$$\Delta t = \lambda \Delta x$$
+$$n_t = \textrm{round}(t_{\textrm{max}} / \Delta t) + 1$$
 
-% ADI equation
+When ADI discretization method is applied to equation (\ref{sch_2d}), the following relations are 
+reached:
 \begin{align}\label{ADI_1}
 \left( 1 - i \frac{\Delta t}{2} \partial_{xx}^h \right) \psi_{i,j}^{n+\frac{1}{2}} &=
 \left( 1 + i \frac{\Delta t}{2} \partial_{xx}^h \right)
@@ -211,27 +219,73 @@ $$\partial_{yy}^h u_{i,j}^n \equiv \frac{u_{i,j+1}^n - 2u_{i,j}^n + u_{i,j-1}^n}
 \psi_{i,j}^{n+1} &= \psi_{i,j}^{n+\frac{1}{2}},
 \nonumber \\ i = 2,3,\ldots,n_x-1, \quad j &= 2,3,\ldots,n_y-1, \quad n = 1,2,\ldots,n_t-1.
 \end{align}
+Where it is understood that $\psi^{n+1}$ is found by first solving for $\psi^{n+\frac{1}{2}}$ via 
+equation (\ref{ADI_1}). Both (\ref{ADI_1}) and (\ref{ADI_2}) are subject to the initial and 
+boundary conditions:
+$$\psi_{i,j}^1 = \psi_0 (x_i, y_j)$$
+$$\psi_{1,j}^n = \psi_{n_x,j}^n = \psi_{i,1}^n = \psi_{i,n_y}^n = 0$$
+The operators $\partial_{xx}^h$ and $\partial_{yy}^h$ are defined as:
+$$\partial_{xx}^h u_{i,j}^n \equiv \frac{u_{i+1,j}^n - 2u_{i,j}^n + u_{i-1,j}^n}{\Delta x^2}$$
+$$\partial_{yy}^h u_{i,j}^n \equiv \frac{u_{i,j+1}^n - 2u_{i,j}^n + u_{i,j-1}^n}{\Delta y^2}$$
 
-% Expanded LHS form for finding tridiagonal coefficients 
-
+The left-hand-side of equation (\ref{ADI_1}) can be rearranged into the following form for 
+computing the sparse matrix for the first tridiagonal system:
 \begin{equation}\label{n_half_LHS}
 -\frac{i \Delta t}{2 \Delta x^2} \psi_{i+1,j}^{n+\frac{1}{2}} + \left(1 + 
 \frac{i \Delta t}{\Delta x^2} \right) \psi_{i,j}^{n+\frac{1}{2}} - \frac{i \Delta t}{2 \Delta x^2} 
 \psi_{i-1,j}^{n+\frac{1}{2}}
 \end{equation}
-
+The right-hand-side of equation (\ref{ADI_1}) is not expanded due to its complexity, but is instead
+reduced to two steps of computation. Equation (\ref{n_half_RHS_1}) shows the action of the rightmost
+parenthesis on $\psi_{i,j}^n$ in equation (\ref{ADI_1}). The output of this action is labelled as 
+$f^*$.
 \begin{equation}\label{n_half_RHS_1}
 \frac{i \Delta t}{2 \Delta y^2} \psi_{i,j+1}^{n} + \left(1 - i \Delta t \left(\frac{1}{\Delta y^2}
 + \frac{V_{i,j}}{2} \right) \right) \psi_{i,j}^n + \frac{i \Delta t}{2 \Delta y^2} \psi_{i,j-1}^n
-= f_i^*
+= f^*
 \end{equation}
+The action of the second from right parenthesis in equation (\ref{ADI_1}) on $f^*$ is then
+shown in equation (\ref{n_half_RHS_2}).
 \begin{equation}\label{n_half_RHS_2}
 \frac{i \Delta t}{2 \Delta x^2} f_{i+1}^* + \left(1 - \frac{i \Delta t}{\Delta x^2} \right) f_i^*
 + \frac{i \Delta t}{2 \Delta x^2} f_{i-1}^* = f
 \end{equation}
+Equations (\ref{n_half_LHS}), (\ref{n_half_RHS_1}) and (\ref{n_half_RHS_2}) define the first
+tridiagonal system in the ADI scheme, for which the implementation in code is described later in the 
+implementation section. 
 
-% Potentials
+The output of the above tridiagonal system is then fed into the second tridiagonal system in the ADI 
+scheme, which comes from rearranging equation (\ref{ADI_2}):
+\begin{equation}\label{n_full}
+-\frac{i \Delta t}{2 \Delta y^2} \psi_{i,j+1}^{n+1} + \left(1 + \frac{i \Delta t}{\Delta y^2} + 
+\frac{i \Delta t}{2} V_{i,j} \right) \psi_{i,j}^{n+1} - \frac{i \Delta t}{2 \Delta y^2} 
+\psi_{i,j-1}^{n+1} = \psi_{i,j-1}^{n+\frac{1}{2}}
+\end{equation}
+How equations (\ref{n_half_LHS}), (\ref{n_half_RHS_1}), (\ref{n_half_RHS_2}), and (\ref{n_full})
+are implemented in code is described in detail in the implementation section of this report. 
 
+The script \code{sch\_2d\_adi.m} additionally takes parameters \code{idtype}, \code{idpar}, 
+\code{vtype}, and \code{vpar}. \code{idtype} and \code{idpar} define the initial conditions, 
+which takes the form of an exact family for \code{idtype == 0}:
+$$\psi(x,y,0) = \sin(m_x \pi x) \sin(m_y \pi y)$$
+or of a boosted Gaussian for \code{idtype == 1}: 
+$$\psi(x,y,0) = e^{i p_x x} e^{i p_y y} e^{-((x - x_0)^2 / \delta_x^2 + (y - y_0)^2 / \delta_y^2)}$$
+\code{vtype} and \code{vpar} define the time-independent potential which takes the form of no 
+potential for \code{vtype == 0}:
+$$V(x,y) = 0$$
+or of a rectangular barrier or well for \code{vtype == 1}:
+$$V(x, y) = 
+\begin{cases} 
+V_c & \text{for } (x_{\min} \leq x \leq x_{\max}) \text{ and } (y_{\min} \leq y \leq y_{\max}) \\
+0 & \text{otherwise}
+\end{cases}$$
+or of a double slit potential for \code{vtype == 2}:
+$$j' = (n_y - 1) / 4 + 1$$
+$$V_{i,j'} = V_{i,j'+1} = 0 \quad \text{for} \quad 
+\left[ (x_1 \leq x_i) \ \text{and} \ (x_i \leq x_2) \right] \ \text{or} \ 
+\left[ (x_3 \leq x_i) \ \text{and} \ (x_i \leq x_4) \right]$$
+$$V_{i,j'} = V_{i,j'+1} = V_c \quad \text{otherwise}$$
+$$V_{i,j} = 0 \quad \text{for} \quad j \neq (j' \ \text{or} \ j'+1)$$
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Implementation
